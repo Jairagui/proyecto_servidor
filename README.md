@@ -1,20 +1,25 @@
-# E-commerce Platform
+# E-commerce Platform — Backend 
 
-Tienda en línea de ropa. API REST en **Node.js + Express 5 + TypeScript** con persistencia en **MongoDB (Mongoose)**, autenticación **JWT con roles** y pagos con **Stripe**. Incluye un frontend estático (HTML + JS) servido por el mismo servidor.
+API REST de una tienda de ropa en línea hecha con **Node.js + Express 5 + TypeScript**, persistencia en **MongoDB (Mongoose)** y autenticación con **JWT**.
+
+## Features funcionales (Entregable 1)
+1. **Autenticación de usuarios** — registro, login y perfil (`/api/users`).
+2. **Catálogo de productos** — listar, ver detalle y crear (`/api/products`).
+3. **Pedidos** — crear pedido con total calculado en el servidor e historial (`/api/orders`).
 
 ## Estructura
 
 ```
 BACKEND/
   src/
-    config/        env (validado con zod) y conexión a MongoDB
+    config/        variables de entorno (validadas con zod) y conexión a MongoDB
     models/        User, Product, Order (Mongoose)
-    services/      lógica de negocio (auth, productos, pedidos, pagos)
+    services/      lógica de negocio
     controllers/   validación de entrada (zod) y respuesta HTTP
     routes/        endpoints y control de acceso por ruta
-    middleware/    authenticate / authorize, manejo de errores
-    scripts/seed.ts
-docs/              arquitectura (diagramas) y API
+    middleware/    authenticate (JWT) y manejo de errores
+    utils/ types/  utilidades y tipos
+  requests.http    peticiones de ejemplo (extensión REST Client de VS Code)
 ```
 
 Flujo de capas: `Route → Controller → Service → Model → MongoDB`.
@@ -28,36 +33,36 @@ Flujo de capas: `Route → Controller → Service → Model → MongoDB`.
 ```bash
 cd BACKEND
 npm install
-cp .env.example .env        # completa contraseñas y JWT_SECRET (ver abajo)
-docker compose up -d        # levanta MongoDB en un contenedor (puerto 27017)
-npm run seed                # opcional: crea admin y productos de ejemplo
+cp .env.example .env        # completa contraseñas y JWT_SECRET
+docker compose up -d        # levanta MongoDB (puerto 27017)
 npm run dev                 # http://localhost:3000
 ```
 
-Variables (`.env.example`): `MONGO_URI`, `JWT_SECRET` (≥16 caracteres), `STRIPE_SECRET_KEY` (opcional; sin ella los pagos responden 503), `ADMIN_EMAIL` / `ADMIN_PASSWORD` (solo para el seed).
-
-### MongoDB con Docker
-
-`BACKEND/docker-compose.yml` levanta `mongo:7` con usuario root, volumen persistente (`mongo_data`) y healthcheck. Lee `MONGO_ROOT_USER`, `MONGO_ROOT_PASSWORD` y `MONGO_DB` de `BACKEND/.env`; `MONGO_URI` debe usar esos mismos valores.
-
-| Comando (dentro de `BACKEND`) | Qué hace |
-|---|---|
-| `docker compose up -d` | Levanta MongoDB |
-| `docker compose ps` | Verifica que esté `healthy` |
-| `docker compose logs -f mongo` | Ver logs |
-| `docker compose down` | Detiene (los datos se conservan) |
-| `docker compose down -v` | Detiene y borra los datos |
-
-### Comandos de la API
+Comprueba que funciona: `GET http://localhost:3000/api/health` → `{ "status": "ok" }`.
 
 | Comando | Qué hace |
 |---|---|
 | `npm run dev` | Servidor con recarga automática |
 | `npm run build && npm start` | Compila a `dist/` y ejecuta |
 | `npm run typecheck` | Verifica tipos |
+| `docker compose down` | Detiene MongoDB (los datos se conservan) |
 
+## Endpoints
 
-El frontend se abre en `http://localhost:3000/login.html`.
+| Método | Endpoint | Acceso |
+|---|---|---|
+| GET | `/api/health` | Público |
+| POST | `/api/users` | Público |
+| POST | `/api/users/login` | Público |
+| GET | `/api/users/me` | JWT |
+| GET | `/api/products` | Público |
+| GET | `/api/products/:id` | Público |
+| POST | `/api/products` | JWT |
+| POST | `/api/orders` | JWT |
+| GET | `/api/orders/my-orders` | JWT |
+
+La documentación completa (request, response y códigos HTTP) está en el PDF del Entregable 1.
+Autenticación: header `Authorization: Bearer <token>`.
 
 ## Roles
 - **customer** (por defecto al registrarse): ver catálogo, comprar, ver sus pedidos, editar/borrar su cuenta.

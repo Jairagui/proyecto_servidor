@@ -21,3 +21,11 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
   req.user = { id: payload.id, role: payload.role };
   next();
 }
+
+export function authorize(...roles: Role[]) {
+  return (req: Request, _res: Response, next: NextFunction) => {
+    if (!req.user) throw HttpError.unauthorized();
+    if (!roles.includes(req.user.role)) throw HttpError.forbidden();
+    next();
+  };
+}

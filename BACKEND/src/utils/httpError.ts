@@ -7,4 +7,5 @@ export class HttpError extends Error {
   static unauthorized(msg = 'No autorizado') { return new HttpError(401, msg); }
   static forbidden(msg = 'No tienes permisos para esta operación') { return new HttpError(403, msg); }
   static notFound(msg = 'Recurso no encontrado') { return new HttpError(404, msg); }
+  static conflict(msg = 'Conflicto con el estado actual del recurso') { return new HttpError(409, msg); }
 }

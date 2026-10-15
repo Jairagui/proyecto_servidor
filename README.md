@@ -14,8 +14,6 @@ BACKEND/
     routes/        endpoints y control de acceso por ruta
     middleware/    authenticate / authorize, manejo de errores
     scripts/seed.ts
-  tests/           pruebas con Vitest
-FRONTEND/          views, controllers y assets estáticos
 docs/              arquitectura (diagramas) y API
 ```
 
@@ -57,7 +55,7 @@ Variables (`.env.example`): `MONGO_URI`, `JWT_SECRET` (≥16 caracteres), `STRIP
 | `npm run dev` | Servidor con recarga automática |
 | `npm run build && npm start` | Compila a `dist/` y ejecuta |
 | `npm run typecheck` | Verifica tipos |
-| `npm test` | Pruebas unitarias |
+
 
 El frontend se abre en `http://localhost:3000/login.html`.
 

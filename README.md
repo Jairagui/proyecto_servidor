@@ -68,4 +68,3 @@ Autenticación: header `Authorization: Bearer <token>`.
 - **customer** (por defecto al registrarse): ver catálogo, comprar, ver sus pedidos, editar/borrar su cuenta.
 - **admin** (se crea con `npm run seed`): además gestiona productos y lista usuarios.
 
-La documentación de endpoints está en [`docs/API.md`](docs/API.md) y los diagramas en [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).

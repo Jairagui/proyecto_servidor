@@ -1,5 +1,3 @@
-### Peticiones de ejemplo para el Entregable 1 (extensión "REST Client" de VS Code)
-### Ejecuta en orden: haz clic en "Send Request" sobre cada bloque.
 
 @baseUrl = http://localhost:3000/api
 
@@ -56,10 +54,23 @@ Authorization: Bearer {{token}}
 ### 1.6 Perfil sin token (401)
 GET {{baseUrl}}/users/me
 
-### 2.1 Crear producto (201)  -> copia el _id de la respuesta
+### 1.7 Login como admin (200)
+# @name adminLogin
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "admin@tienda.com",
+  "password": "admin123"
+}
+
+###
+@adminToken = {{adminLogin.response.body.token}}
+
+### 2.1 Crear producto (201)  copia el _id de la respuesta
 # @name createProduct
 POST {{baseUrl}}/products
-Authorization: Bearer {{token}}
+Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
 {
@@ -88,7 +99,7 @@ GET {{baseUrl}}/products/{{productId}}
 ### 2.5 Producto inexistente (404)
 GET {{baseUrl}}/products/000000000000000000000000
 
-### 3.1 Crear pedido (201) - el total lo calcula el servidor
+### 3.1 Crear pedido (201)  el total lo calcula el servidor
 POST {{baseUrl}}/orders
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -109,3 +120,69 @@ Content-Type: application/json
 ### 3.3 Mis pedidos (200)
 GET {{baseUrl}}/orders/my-orders
 Authorization: Bearer {{token}}
+
+### ---------- Entregable 2 ----------
+
+### 4.1 Cliente intenta crear un producto (403)
+POST {{baseUrl}}/products
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "name": "Gorra", "price": 250, "stock": 10, "size": "U" }
+
+### 4.2 Admin edita el producto (200)
+PUT {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{ "price": 799, "stock": 8 }
+
+### 4.3 Editar con stock negativo (400)
+PUT {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{ "stock": -5 }
+
+### 4.4 Cliente intenta borrar el producto (403)
+DELETE {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{token}}
+
+### 4.5 Admin ve todos los usuarios (200)
+GET {{baseUrl}}/users
+Authorization: Bearer {{adminToken}}
+
+### 4.6 Cliente intenta ver los usuarios (403)
+GET {{baseUrl}}/users
+Authorization: Bearer {{token}}
+
+### 4.7 Admin cambia el rol del cliente a admin (200)
+PATCH {{baseUrl}}/users/{{login.response.body.user.id}}/role
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{ "role": "admin" }
+
+### 4.8 Admin intenta cambiar su propio rol (400)
+PATCH {{baseUrl}}/users/{{adminLogin.response.body.user.id}}/role
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{ "role": "customer" }
+
+### 4.9 Admin ve todos los pedidos con el cliente que los hizo (200)
+GET {{baseUrl}}/orders
+Authorization: Bearer {{adminToken}}
+
+### 5.1 Buscar por nombre (200)
+GET {{baseUrl}}/products?search=hoodie
+
+### 5.2 Filtrar por talla, precio y existencias, ordenado por precio (200)
+GET {{baseUrl}}/products?size=M&minPrice=300&maxPrice=1000&inStock=true&sort=price_asc
+
+### 5.3 Precio mínimo mayor al máximo (400)
+GET {{baseUrl}}/products?minPrice=900&maxPrice=100
+
+### 6.1 Admin borra el producto (200) - va al final porque las pruebas de arriba usan este producto
+DELETE {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{adminToken}}

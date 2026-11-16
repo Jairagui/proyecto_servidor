@@ -7,6 +7,10 @@ API REST de una tienda de ropa en línea hecha con **Node.js + Express 5 + TypeS
 2. **Catálogo de productos** — listar, ver detalle y crear (`/api/products`).
 3. **Pedidos** — crear pedido con total calculado en el servidor e historial (`/api/orders`).
 
+## Features nuevas (Entregable 2)
+4. **Roles y administración** — el admin crea, edita y borra productos, ve los usuarios, cambia roles y ve todos los pedidos.
+5. **Búsqueda y filtros** — buscar productos por nombre y filtrar por talla, precio y existencias.
+
 ## Estructura
 
 ```
@@ -35,6 +39,7 @@ cd BACKEND
 npm install
 cp .env.example .env        # completa contraseñas y JWT_SECRET
 docker compose up -d        # levanta MongoDB (puerto 27017)
+npm run seed                # crea el admin (admin@tienda.com / admin123) y productos de ejemplo
 npm run dev                 # http://localhost:3000
 ```
 
@@ -57,9 +62,16 @@ Comprueba que funciona: `GET http://localhost:3000/api/health` → `{ "status": 
 | GET | `/api/users/me` | JWT |
 | GET | `/api/products` | Público |
 | GET | `/api/products/:id` | Público |
-| POST | `/api/products` | JWT |
+| POST | `/api/products` | Admin |
 | POST | `/api/orders` | JWT |
 | GET | `/api/orders/my-orders` | JWT |
+| PUT | `/api/products/:id` | Admin |
+| DELETE | `/api/products/:id` | Admin |
+| GET | `/api/users` | Admin |
+| PATCH | `/api/users/:id/role` | Admin |
+| GET | `/api/orders` | Admin |
+
+Filtros de `GET /api/products` (todos opcionales): `search`, `size`, `minPrice`, `maxPrice`, `inStock=true`, `sort=price_asc` o `price_desc`.
 
 La documentación completa (request, response y códigos HTTP) está en el PDF del Entregable 1.
 Autenticación: header `Authorization: Bearer <token>`.

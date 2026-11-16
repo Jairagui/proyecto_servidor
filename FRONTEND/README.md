@@ -1,16 +1,44 @@
-# React + Vite
+# VÉNORA — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend sencillo en **React + Vite** que consume la API del backend.
 
-Currently, two official plugins are available:
+## Cómo correrlo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Primero el backend tiene que estar corriendo en `http://localhost:3000` (ver el README principal).
 
-## React Compiler
+```bash
+cd FRONTEND
+npm install
+npm run dev        # http://localhost:5173
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Vite manda las peticiones de `/api` al backend, así que no hay que configurar nada más.
 
-## Expanding the ESLint configuration
+Usuario admin (lo crea `npm run seed` en el backend): `admin@tienda.com` / `admin123`
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Pantallas
+
+| Ruta | Qué hace | Quién |
+|---|---|---|
+| `/` | Inicio con carrusel de productos | Todos |
+| `/catalogo` | Catálogo con filtros (nombre, talla, precio, existencias, orden) | Todos |
+| `/producto/:id` | Detalle de la prenda y agregar al carrito | Todos |
+| `/login`, `/registro` | Iniciar sesión y crear cuenta | Todos |
+| `/mis-pedidos` | Historial de pedidos | Con sesión |
+| `/admin` | Productos, usuarios y pedidos | Solo admin |
+
+## Estructura
+
+```
+public/imagenes/  aquí van a ir las fotos de los productos (todavía no hay)
+src/
+  api.js          todas las llamadas al backend
+  context/        sesión y carrito (AppContext)
+  componentes/    barra de arriba, tarjeta de producto y panel del carrito
+  pantallas/      una por cada pantalla de la página
+  index.css       estilos (blanco y negro)
+```
+
+El carrito es un panel que se abre con el botón del carrito de arriba cuando ya iniciaste sesión.
+
+Solo hay un `index.html` porque React cambia de pantalla sin recargar la página. Las pantallas están en `src/pantallas` y las rutas en `src/App.jsx`.

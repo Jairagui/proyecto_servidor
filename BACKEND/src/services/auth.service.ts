@@ -42,3 +42,19 @@ export async function getUserById(id: string) {
   if (!user) throw HttpError.notFound('Usuario no encontrado');
   return toPublicUser(user);
 }
+
+// ---- Administración de usuarios (solo admin) ----
+
+export async function listUsers() {
+  const users = await User.find();
+  return users.map(toPublicUser);
+}
+
+export async function changeRole(adminId: string, userId: string, role: string) {
+  // Un admin no puede cambiarse su propio rol, para no dejar la tienda sin administrador
+  if (adminId === userId) throw HttpError.badRequest('No puedes cambiar tu propio rol');
+
+  const user = await User.findByIdAndUpdate(userId, { role }, { new: true });
+  if (!user) throw HttpError.notFound('Usuario no encontrado');
+  return toPublicUser(user);
+}

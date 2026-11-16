@@ -17,7 +17,7 @@ async function seed() {
     console.log('Admin creado: admin@tienda.com / admin123');
   }
 
-  // Productos de ejemplo (solo si la colección está vacía)
+  // Productos de ejemplo
   if ((await Product.countDocuments()) === 0) {
     await Product.insertMany([
       { name: 'Playera básica blanca', description: 'Algodón 100%', price: 249, stock: 30, size: ['S', 'M', 'L'] },

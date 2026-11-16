@@ -8,6 +8,7 @@ const registerSchema = z.object({
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
 });
 const loginSchema = z.object({ email: z.string().email(), password: z.string().min(1) });
+const roleSchema = z.object({ role: z.enum(['customer', 'admin']) });
 
 export async function register(req: Request, res: Response) {
   const result = await authService.register(registerSchema.parse(req.body));
@@ -22,4 +23,14 @@ export async function login(req: Request, res: Response) {
 
 export async function me(req: Request, res: Response) {
   res.json(await authService.getUserById(req.user!.id));
+}
+
+export async function list(_req: Request, res: Response) {
+  res.json(await authService.listUsers());
+}
+
+export async function changeRole(req: Request, res: Response) {
+  const { role } = roleSchema.parse(req.body);
+  const user = await authService.changeRole(req.user!.id, req.params.id as string, role);
+  res.json({ message: 'Rol actualizado', user });
 }

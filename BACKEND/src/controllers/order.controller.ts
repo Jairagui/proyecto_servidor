@@ -2,7 +2,6 @@ import type { Request, Response } from 'express';
 import { z } from 'zod';
 import * as orderService from '../services/order.service';
 
-// Si el cliente manda `price` o `total`, se ignora: el servidor calcula todo.
 const createSchema = z.object({
   items: z
     .array(
@@ -22,4 +21,8 @@ export async function create(req: Request, res: Response) {
 
 export async function myOrders(req: Request, res: Response) {
   res.json(await orderService.getUserOrders(req.user!.id));
+}
+
+export async function listAll(_req: Request, res: Response) {
+  res.json(await orderService.getAllOrders());
 }

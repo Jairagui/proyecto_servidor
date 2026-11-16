@@ -33,3 +33,6 @@ export async function createOrder(userId: string, cart: CartItem[]) {
 }
 
 export const getUserOrders = (userId: string) => Order.find({ userId }).sort({ createdAt: -1 });
+
+// Todos los pedidos de la tienda con el nombre y correo del cliente (solo admin)
+export const getAllOrders = () => Order.find().sort({ createdAt: -1 }).populate('userId', 'name email');
